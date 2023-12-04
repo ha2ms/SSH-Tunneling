@@ -15,6 +15,66 @@ Plus simple, un Tunnel SSH, pas de certificats à gérer,  pas de configuration 
 >![](http://93.90.205.194/docs/ssh-tunneling/ssh-tunneling-draw-number.png)
 > ##
 
+## Sur la Machine du node-exporter:
+> Récupérez et stockez dans le **authorized_keys** (de l'utilisateur utilisé par le **tunnel SSH**) la clé publique généré sur le serveur Prometheus.
+> ##
+
+> #### Éditer le service node-exporter:
+> ```bash
+> sudo systemctl edit --full prometheus-node-exporter.service
+> ```
+>
+>```vim
+>[Unit]
+> Description=Prometheus exporter for machine metrics
+> Documentation=https://github.com/prometheus/node_exporter
+>
+> [Service]
+> Restart=always
+> User=prometheus
+> EnvironmentFile=/etc/default/prometheus-node-exporter
+> ExecStart=/usr/bin/prometheus-node-exporter $ARGS
+> ExecReload=/bin/kill -HUP $MAINPID
+> TimeoutStopSec=20s
+> SendSIGKILL=no
+>
+> [Install]
+> WantedBy=multi-user.target
+>```
+>##
+>## Si vous avez utiliser < apt install > (gestionnaire de paquets) pour le node-exporter
+>On peut voir qu'un fichier d'environnement existe dans **</etc/default/prometheus-node-exporter>**, editons le:
+>```bash
+>sudo nano /etc/default/prometheus-node-exporter
+>```
+>L'on peut voir vers le début l'argument **ARGS=""**
+>Ajoutez entre les guillemets: 
+>```vim
+>ARGS="--web.listen-address=127.0.0.1:9100"
+>```
+>Puis dans l'édition du systèmed ajouter **$ARGS** comme argument dans **ExecStart**
+>```vim
+>ExecStart=/usr/bin/prometheus-node-exporter $ARGS
+>```
+>##
+> ## Si vous avez installé node-exporter manuellement
+> Dans l'édition du systemd du node-exporter.
+> Ajoutez la variable d'environnement **ARGS** juste au-dessus de **ExecStart**:
+> ```vim
+> # Création variable environnement
+> Environment="ARGS=--web.listen-address=127.0.0.1:9100"
+> ExecStart=/usr/bin/node-exporter $ARGS
+> # Utilisation de la variable dans ExecStart
+> ```
+> Puis relançons le démon du systemd:
+> ```bash
+> sudo systemctl daemon-reload
+> sudo systemctl restart node-exporter
+> sudo systemctl status node-exporter
+> ```
+> Maintenant les metrics ne sont accesibles que depuis la machine elle-même ! Et par conséquent seul vôtre tunnel est à même de récupérer les donnés depuis l'extérieur.
+> ##
+
 ## Sur le Serveur Prometheus:
 > ## Préparation de notre environnement:
 
@@ -100,63 +160,3 @@ Plus simple, un Tunnel SSH, pas de certificats à gérer,  pas de configuration 
 > ##
 
 Notre Prometheus passe bien par le tunnel SSH, mais nos metrics restent toujours accessibles depuis l’extérieur, il nous faudra bloquer cet accès pour n'écouter sur le port 9100 seulement depuis la machine elle-même.
- 
-## Sur la Machine du node-exporter:
-> Récupérez et stockez dans le **authorized_keys** (de l'utilisateur utilisé par le **tunnel SSH**) la clé publique généré sur le serveur Prometheus.
-> ##
-
-> #### Éditer le service node-exporter:
-> ```bash
-> sudo systemctl edit --full prometheus-node-exporter.service
-> ```
->
->```vim
->[Unit]
-> Description=Prometheus exporter for machine metrics
-> Documentation=https://github.com/prometheus/node_exporter
->
-> [Service]
-> Restart=always
-> User=prometheus
-> EnvironmentFile=/etc/default/prometheus-node-exporter
-> ExecStart=/usr/bin/prometheus-node-exporter $ARGS
-> ExecReload=/bin/kill -HUP $MAINPID
-> TimeoutStopSec=20s
-> SendSIGKILL=no
->
-> [Install]
-> WantedBy=multi-user.target
->```
->##
->## Si vous avez utiliser < apt install > (gestionnaire de paquets) pour le node-exporter
->On peut voir qu'un fichier d'environnement existe dans **</etc/default/prometheus-node-exporter>**, editons le:
->```bash
->sudo nano /etc/default/prometheus-node-exporter
->```
->L'on peut voir vers le début l'argument **ARGS=""**
->Ajoutez entre les guillemets: 
->```vim
->ARGS="--web.listen-address=127.0.0.1:9100"
->```
->Puis dans l'édition du systèmed ajouter **$ARGS** comme argument dans **ExecStart**
->```vim
->ExecStart=/usr/bin/prometheus-node-exporter $ARGS
->```
->##
-> ## Si vous avez installé node-exporter manuellement
-> Dans l'édition du systemd du node-exporter.
-> Ajoutez la variable d'environnement **ARGS** juste au-dessus de **ExecStart**:
-> ```vim
-> # Création variable environnement
-> Environment="ARGS=--web.listen-address=127.0.0.1:9100"
-> ExecStart=/usr/bin/node-exporter $ARGS
-> # Utilisation de la variable dans ExecStart
-> ```
-> Puis relançons le démon du systemd:
-> ```bash
-> sudo systemctl daemon-reload
-> sudo systemctl restart node-exporter
-> sudo systemctl status node-exporter
-> ```
-> Maintenant les metrics ne sont accesibles que depuis la machine elle-même ! Et par conséquent seul vôtre tunnel est à même de récupérer les donnés depuis l'extérieur.
-> ##
