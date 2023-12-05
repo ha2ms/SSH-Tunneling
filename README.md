@@ -1,4 +1,4 @@
-# Sécuriser ses remontées de metrics vers Prometheus via le SSH-Tunneling
+# Sécuriser ses remontées de maetrics vers Prometheus via le SSH-Tunneling
 
 Lors d'une remontée standard de metrics, l'on configure Prometheus pour pointer sur l'hôte et le port prédéfini de notre machine cible, contentant le node-exporter nous permettant l'accès à ses précieuses metrics.
 ## 
