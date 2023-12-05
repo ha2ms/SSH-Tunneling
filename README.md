@@ -159,4 +159,4 @@ Plus simple, un Tunnel SSH, pas de certificats à gérer,  pas de configuration 
 > Notre tunnel fonctionne !
 > ##
 
-Notre Prometheus passe bien par le tunnel SSH, mais nos metrics restent toujours accessibles depuis l’extérieur, il nous faudra bloquer cet accès pour n'écouter sur le port 9100 seulement depuis la machine elle-même.
+Notre Prometheus passe bien par le tunnel SSH dorénavant !
