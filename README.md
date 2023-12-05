@@ -16,6 +16,8 @@ Plus simple, un Tunnel SSH, pas de certificats à gérer,  pas de configuration 
 > ##
 
 ## Sur la Machine du node-exporter:
+Il nous faudra restreindre l'accès pour n'écouter sur le port 9100 seulement depuis la machine elle-même.
+
 > Récupérez et stockez dans le **authorized_keys** (de l'utilisateur utilisé par le **tunnel SSH**) la clé publique généré sur le serveur Prometheus.
 > ##
 
