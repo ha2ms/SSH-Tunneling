@@ -13,13 +13,13 @@ Plus simple, un Tunnel SSH, pas de certificats à gérer,  pas de configuration 
 > - Elles seront récupérées depuis l'hôte distant lui même puis redirigées (via le tunnel sécurisé) sur le serveur local de Prometheus (au port 7080).
 > 
 >![](http://93.90.205.194/docs/ssh-tunneling/ssh-tunneling-draw-number.png)
-> ##
+---
 
 ## Sur la Machine du node-exporter:
 Il nous faudra restreindre l'accès pour n'écouter sur le port 9100 seulement depuis la machine elle-même.
 
 > Récupérez et stockez dans le **authorized_keys** (de l'utilisateur utilisé par le **tunnel SSH**) la clé publique généré sur le serveur Prometheus.
-> ##
+---
 
 > #### Éditer le service node-exporter:
 > ```bash
@@ -43,7 +43,7 @@ Il nous faudra restreindre l'accès pour n'écouter sur le port 9100 seulement d
 > [Install]
 > WantedBy=multi-user.target
 >```
->##
+---
 >## Si vous avez utiliser < apt install > (gestionnaire de paquets) pour le node-exporter
 >On peut voir qu'un fichier d'environnement existe dans **</etc/default/prometheus-node-exporter>**, editons le:
 >```bash
@@ -58,7 +58,7 @@ Il nous faudra restreindre l'accès pour n'écouter sur le port 9100 seulement d
 >```vim
 >ExecStart=/usr/bin/prometheus-node-exporter $ARGS
 >```
->##
+---
 > ## Si vous avez installé node-exporter manuellement
 > Dans l'édition du systemd du node-exporter.
 > Ajoutez la variable d'environnement **ARGS** juste au-dessus de **ExecStart**:
@@ -75,7 +75,7 @@ Il nous faudra restreindre l'accès pour n'écouter sur le port 9100 seulement d
 > sudo systemctl status node-exporter
 > ```
 > Maintenant les metrics ne sont accesibles que depuis la machine elle-même ! Et par conséquent seul vôtre tunnel est à même de récupérer les donnés depuis l'extérieur.
-> ##
+---
 
 ## Sur le Serveur Prometheus:
 > ## Préparation de notre environnement:
@@ -88,7 +88,7 @@ Il nous faudra restreindre l'accès pour n'écouter sur le port 9100 seulement d
 > # Création de notre paire de clés
 > sudo ssh-keygen -t rsa -b 2048 -f /etc/systemd/service_ssh_key/ssh-> tunnel/id_rsa
 >```
-> ##
+---
 
 
 > C'est l'option **-L** de la commande **SSH** qui permet de réaliser ce "forward" en créant un service en local sur un port défini qui sera le "miroir" du service distant:
@@ -102,14 +102,14 @@ Il nous faudra restreindre l'accès pour n'écouter sur le port 9100 seulement d
 > # de la machine distante (qui se situe à 192.168.1.127).
 > ```
 > La machine sur lequel s’exécute cette commande doit avoir le port sur lequel elle écoute de disponible et non utilisé par un autre processus.
-> ##
+---
 
  > ### Édition du nouveau service:
  > ```bash
  > # Création d'un nouveau service
  > sudo systemctl edit --force --full ssh-tunnel.service
  > ```
-> ##
+---
 > Ici on configure dans la section [Service] une variable d'environnement contenant le chemin de notre clé privé que l'on réutilisera juste en dessous dans ExecStart:
 
 > ```vim
@@ -126,7 +126,7 @@ Il nous faudra restreindre l'accès pour n'écouter sur le port 9100 seulement d
 > [Install]
 > WantedBy=multi-user.target
 > ```
-> ##
+---
 
 > On active le nouveau service:
 > ```bash
@@ -137,7 +137,7 @@ Il nous faudra restreindre l'accès pour n'écouter sur le port 9100 seulement d
 > # On s'assure que le service tourne correctement
 > sudo systemctl status ssh-tunnel.service
 > ```
-> ##
+---
 
 > On modifie la destination de la target dans notre config **prometheus.yml**:
 > ```yaml
@@ -150,7 +150,7 @@ Il nous faudra restreindre l'accès pour n'écouter sur le port 9100 seulement d
 >		static_configs:
 >			- targets: ['localhost:7080']
 > ```
-> ##
+---
 
 > #### On restart le service:
 > ```bash
@@ -159,6 +159,6 @@ Il nous faudra restreindre l'accès pour n'écouter sur le port 9100 seulement d
 > On vérifie enfin que la remonté s'effectue correctement depuis l'interface web de Prometheus:
 > ![](http://93.90.205.194/docs/ssh-tunneling/prometheus-7080.png)
 > Notre tunnel fonctionne !
-> ##
+---
 
 Notre Prometheus passe bien par le tunnel SSH dorénavant !
