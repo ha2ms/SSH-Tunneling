@@ -1,10 +1,10 @@
 # Sécuriser ses remontées de metrics vers Prometheus via le SSH-Tunneling
 
 Lors d'une remontée standard de metrics, l'on configure Prometheus pour pointer sur l'hôte et le port prédéfini de notre machine cible, contentant le node-exporter nous permettant l'accès à ses précieuses metrics.
-## 
+--- 
 Cependant ces metrics sont ouvertement accessibles et exploitable par n'importe qui faisant une requête sur le service.
   L'idée est donc de fermer l'accès à ces metrics depuis l’extérieur de la machine, mais comment Prometheus va pouvoir y accéder si les données ne sont accessibles qu'au sein même de la machine ? Un VPN ?
-  ##
+  ---
 Plus simple, un Tunnel SSH, pas de certificats à gérer,  pas de configuration complexe, une simple clé privée et publique suffit pour établir nôtre connexion sécurisée pour accéder à l'hôte distant, récupérer les fameuses metrics, et les rendre de nouveaux accessibles au sein même de notre machine Prometheus.
 
 > Le SSH Tunneling va:
