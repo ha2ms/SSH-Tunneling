@@ -6,7 +6,7 @@ Cependant ces metrics sont ouvertement accessibles et exploitable par n'importe 
   L'idée est donc de fermer l'accès à ces metrics depuis l’extérieur de la machine, mais comment Prometheus va pouvoir y accéder si les données ne sont accessibles qu'au sein même de la machine ? Un VPN ?
   ---
 Plus simple, un Tunnel SSH, pas de certificats à gérer,  pas de configuration complexe, une simple clé privée et publique suffit pour établir nôtre connexion sécurisée pour accéder à l'hôte distant, récupérer les fameuses metrics, et les rendre de nouveaux accessibles au sein même de notre machine Prometheus.
-
+---
 > Le SSH Tunneling va:
 > - Ouvrir un service sur un port local de Prometheus pour qu'il puisse s'y connecter (ex: 7080).
 > - Dès que Prometheus lancera une requête sur son port 7080, une connexion SSH sera établit avec l'hôte distant contenant les metrics. 
