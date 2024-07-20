@@ -86,7 +86,7 @@ Il nous faudra restreindre l'accès pour n'écouter sur le port 9100 seulement d
 > mkdir -p /etc/systemd/service_ssh_key/ssh-tunnel
 >
 > # Création de notre paire de clés
-> sudo ssh-keygen -t rsa -b 2048 -f /etc/systemd/service_ssh_key/ssh-> tunnel/id_rsa
+> sudo ssh-keygen -t rsa -b 2048 -f /etc/systemd/service_ssh_key/ssh-tunnel/id_rsa
 >```
 ---
 
