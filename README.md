@@ -44,7 +44,7 @@ Il nous faudra restreindre l'accès pour n'écouter sur le port 9100 seulement d
 > WantedBy=multi-user.target
 >```
 ---
->## Si vous avez utiliser < apt install > (gestionnaire de paquets) pour le node-exporter
+>## Si vous avez utilisé < apt install > (gestionnaire de paquets) pour le node-exporter
 >On peut voir qu'un fichier d'environnement existe dans **</etc/default/prometheus-node-exporter>**, editons le:
 >```bash
 >sudo nano /etc/default/prometheus-node-exporter
